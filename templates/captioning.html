@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Captioning</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+</head>
+<body>
+    <div class="page-shell">
+        <header class="topbar">
+            <div class="brand">Vision<span>AI</span></div>
+            <nav class="nav-links" aria-label="Main navigation">
+                <a href="/">Detection</a>
+                <a href="/captioning" class="active">Captioning</a>
+                <a href="/insights">Image Insights</a>
+                <a href="/resources">Resources</a>
+            </nav>
+        </header>
+
+        <main class="hero">
+            <section class="upload-panel caption-panel">
+                <div class="panel-copy">
+                    <span class="eyebrow">Image captioning</span>
+                    <h1>Generate a caption from an uploaded image</h1>
+                    <p>Use the detector to identify the main objects and turn them into a natural-language description.</p>
+                </div>
+
+                <form action="/captioning" method="post" enctype="multipart/form-data" class="upload-form">
+                    <label class="file-picker" for="file">
+                        <input type="file" name="file" id="file" accept="image/*">
+                        <span class="file-label">Choose image</span>
+                    </label>
+                    <button type="submit" class="primary-btn">Generate caption</button>
+                </form>
+
+                {% if error %}
+                <div class="status-badge error-badge">{{ error }}</div>
+                {% endif %}
+
+                {% if caption %}
+                <div class="status-badge success-badge">{{ caption }}</div>
+                {% endif %}
+
+                <div class="preview-box">
+                    {% if image_url %}
+                    <img src="{{ image_url }}" alt="Uploaded caption preview" id="resultImage" style="display:block; width: min(100%, 640px); max-height: 460px; object-fit: contain;">
+                    {% else %}
+                    <img id="imagen" alt="Selected image preview">
+                    {% endif %}
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        function init() {
+            var inputFile = document.getElementById('file');
+            if (inputFile) {
+                inputFile.addEventListener('change', mostrarImagen, false);
+            }
+        }
+
+        function mostrarImagen(event) {
+            var file = event.target.files[0];
+            if (!file) return;
+
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                var img = document.getElementById('imagen');
+                if (img) {
+                    img.src = event.target.result;
+                    img.style.display = 'block';
+                    img.style.width = 'min(100%, 640px)';
+                    img.style.maxHeight = '460px';
+                    img.style.objectFit = 'contain';
+                }
+
+                var resultImage = document.getElementById('resultImage');
+                if (resultImage) {
+                    resultImage.src = event.target.result;
+                    resultImage.style.display = 'block';
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        window.addEventListener('load', init, false);
+    </script>
+</body>
+</html>

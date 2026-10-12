@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Insights</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+</head>
+<body>
+    <div class="page-shell">
+        <header class="topbar">
+            <div class="brand">Vision<span>AI</span></div>
+            <nav class="nav-links" aria-label="Main navigation">
+                <a href="/">Detection</a>
+                <a href="/captioning">Captioning</a>
+                <a href="/insights" class="active">Image Insights</a>
+                <a href="/resources">Resources</a>
+            </nav>
+        </header>
+
+        <main class="hero">
+            <section class="upload-panel insight-panel">
+                <div class="panel-copy">
+                    <span class="eyebrow">Uploaded image insights</span>
+                    <h1>Information about the current image</h1>
+                    <p>Review the detected objects, generated caption, and file properties in one place.</p>
+                </div>
+
+                <form action="/insights" method="post" enctype="multipart/form-data" class="upload-form">
+                    <label class="file-picker" for="file">
+                        <input type="file" name="file" id="file" accept="image/*">
+                        <span class="file-label">Choose image</span>
+                    </label>
+                    <button type="submit" class="primary-btn">View insights</button>
+                </form>
+
+                {% if error %}
+                <div class="status-badge error-badge">{{ error }}</div>
+                {% endif %}
+
+                {% if uploaded and image_url %}
+                <div class="insight-grid">
+                    <div class="preview-box small-preview">
+                        <img src="{{ image_url }}" alt="Uploaded image insights preview" id="resultImage" style="display:block; width:min(100%,520px); max-height:420px; object-fit:contain;">
+                    </div>
+
+                    <div class="insight-card">
+                        <h3>Key analysis points</h3>
+                        {% if summary_points %}
+                        <ul class="summary-points">
+                            {% for point in summary_points %}
+                            <li>{{ point }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+
+                        <h3>Caption</h3>
+                        <p>{{ caption }}</p>
+
+                        <h3>Detected objects</h3>
+                        {% if labels %}
+                        <ul>
+                            {% for label in labels %}
+                            <li>{{ label }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <p>No confident objects detected.</p>
+                        {% endif %}
+
+                        <h3>File details</h3>
+                        {% if details %}
+                        <ul>
+                            <li><strong>Name:</strong> {{ details.filename }}</li>
+                            <li><strong>Type:</strong> {{ details.extension }}</li>
+                            <li><strong>Size:</strong> {{ details.size_kb }} KB</li>
+                            <li><strong>Resolution:</strong> {{ details.width }} × {{ details.height }} px</li>
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="preview-box small-preview">
+                    <img id="imagen" alt="Selected image preview">
+                </div>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+
+    <script>
+        function init() {
+            var inputFile = document.getElementById('file');
+            if (inputFile) {
+                inputFile.addEventListener('change', mostrarImagen, false);
+            }
+        }
+
+        function mostrarImagen(event) {
+            var file = event.target.files[0];
+            if (!file) return;
+
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                var img = document.getElementById('imagen');
+                if (img) {
+                    img.src = event.target.result;
+                    img.style.display = 'block';
+                    img.style.width = 'min(100%, 520px)';
+                    img.style.maxHeight = '420px';
+                    img.style.objectFit = 'contain';
+                }
+
+                var resultImage = document.getElementById('resultImage');
+                if (resultImage) {
+                    resultImage.src = event.target.result;
+                    resultImage.style.display = 'block';
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        window.addEventListener('load', init, false);
+    </script>
+</body>
+</html>

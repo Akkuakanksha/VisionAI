@@ -1,0 +1,46 @@
+# Local secrets and environment-specific settings
+.env
+.env.*
+!.env.example
+.flaskenv
+.secrets/
+.netrc
+.npmrc
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Python environments, caches, and build output
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Editor and operating-system files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Runtime uploads (do not add new user images)
+uploads/
+
+# Downloaded TensorFlow detector model and its archive
+ssd_mobilenet_v1_coco_11_06_2017/
+ssd_mobilenet_v1_coco_11_06_2017.tar.gz
+
+# Dependencies for the bundled frontend tooling under templates/
+node_modules/

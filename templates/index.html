@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Detection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+</head>
+<body>
+    <div class="page-shell">
+        <header class="topbar">
+            <div class="brand">Vision<span>AI</span></div>
+            <nav class="nav-links" aria-label="Main navigation">
+                <a href="/" class="active">Detection</a>
+                <a href="/captioning">Captioning</a>
+                <a href="/insights">Image Insights</a>
+                <a href="/resources">Resources</a>
+            </nav>
+        </header>
+
+        <main class="hero">
+            <section class="upload-panel">
+                <div class="panel-copy">
+                    <span class="eyebrow">AI-powered image analysis</span>
+                    <h1>Upload an image and detect objects instantly</h1>
+                    <p>Fast, clean, and reliable object detection from your uploaded images.</p>
+                </div>
+
+                <form action="/upload" method="post" enctype="multipart/form-data" class="upload-form">
+                    <label class="file-picker" for="inputFile1">
+                        <input type="file" name="file" id="inputFile1" accept="image/*">
+                        <span class="file-label">Choose image</span>
+                    </label>
+                    <button type="submit" class="primary-btn">Analyze image</button>
+                </form>
+
+                {% if image_caption %}
+                <div class="status-badge"><strong>{{ image_caption }}</strong></div>
+                {% endif %}
+
+                <div class="preview-box">
+                    <img id="imagen" alt="Selected image preview">
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        function init() {
+            var inputFile = document.getElementById('inputFile1');
+            if (inputFile) {
+                inputFile.addEventListener('change', mostrarImagen, false);
+            }
+        }
+
+        function mostrarImagen(event) {
+            var file = event.target.files[0];
+            if (!file) return;
+
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                var img = document.getElementById('imagen');
+                img.src = event.target.result;
+                img.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        window.addEventListener('load', init, false);
+    </script>
+</body>
+</html>
